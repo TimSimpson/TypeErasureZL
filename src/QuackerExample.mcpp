@@ -3,6 +3,7 @@
     ~import std::cin;
     ~import std::cout;
     ~import std::endl;
+    ~import boost::format;
     ~import std::string;
     ~import Quacker;
 
@@ -20,6 +21,29 @@
             q = Doggy{};
             cout << "_@< <(" << q.quack() << "!) " << endl;
 
+            Quacker q2;
+            Doggy dog;
+            q2 = dog;
+
+            //q2 = std::ref(dog);
+            struct Kitty {
+                int lives;
+                Kitty(int lives)
+                :   lives(lives)
+                {
+                    cout << "Kitty is being constructed!\n";
+                }
+
+                string quack() const {
+                    return str(format("I have %s lives.") % lives);
+                }
+            };
+
+            q2 = Doggy{};
+
+            q2 = Kitty(3);
+
+            cout << q2.quack() << endl;
             //cout << "_@< <(" << dog.quack() << "!) " << endl;
         }
     }

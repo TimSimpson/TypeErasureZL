@@ -1,1 +1,2 @@
 class std::unique_ptr { ~hfile=<memory> };
+class boost::format { ~hfile=<boost/format.hpp> };

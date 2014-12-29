@@ -1,0 +1,43 @@
+~unit "HelloWorld" type=exe
+{
+    ~import std::cin;
+    ~import std::cout;
+    ~import std::endl;
+    ~import std::string;
+    ~import anything;
+
+    // Macaroni always assumes imports exist, meaning problems don't arise
+    // until the code generation phase. This is defined in world.mcpp.
+    // Macaroni always uses full logical paths of a type name to bring
+    // an item into scope rather than the physical file path.
+    ~import MacaroniExample::World;
+
+    ~block "cpp"
+    {
+        int main(int argc, char ** argv)
+        {
+            int i = 1;
+            int * i_ptr = &i;
+            anything a;
+            a = i;
+            a = i_ptr;
+
+            a = 2.0;
+            a = std::string("3");
+            struct foo {};
+
+            a = foo();
+
+            cout << "Yo." << endl;
+
+            //struct Doggy {
+            //    string quack() const { return "I am a dog!"; }
+            //};
+            //a = Doggy();
+
+            cout << "Hello World!" << endl;
+            World world;
+            cout << world.Response() << endl;
+        }
+    }
+}

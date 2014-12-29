@@ -1,0 +1,87 @@
+~import std::string;
+
+
+class Quacker
+{
+~block "h-predef" { #include <memory> }
+
+    public Quacker() = default;
+
+    public Quacker(const Quacker & rhs)
+    :   value(rhs.value->clone())
+    {
+    }
+
+    ~block "h" {
+    public: template <typename T> Quacker(T t)
+    :   value(new handle<typename std::remove_reference<T>::type>(
+            std::forward<T>(t)
+        ))
+    {
+    } }
+
+    public Quacker & operator =(const Quacker & rhs)
+    {
+        if (this == &rhs)
+        {
+            return *this;
+        }
+        decltype(value) temp(rhs.value->clone());
+        std::swap(temp, this->value);
+        return *this;
+    }
+
+    ~block "h" {
+    public: template <typename T> Quacker & operator =(T t)
+    {
+        decltype(value) temp(
+            new handle<typename std::remove_reference<T>::type>(
+                std::forward<T>(t)
+            )
+        );
+        std::swap(temp, this->value);
+        return *this;
+    } }
+
+    public std::string quack() const
+    {
+        if (value) {
+            return value->quack();
+        } else {
+            return "<null>";
+        }
+    }
+
+    public class handle_base
+    {
+        public virtual ~handle_base() {}
+        public virtual handle_base * clone() const = 0;
+        public virtual std::string quack() const = 0;
+    };
+
+~block "h" {
+    public:
+        template<typename T>
+        struct handle : handle_base
+        {
+            handle(T value)
+            :   value_(std::move(value))
+            {
+            }
+
+            virtual handle_base * clone() const
+            {
+                return new handle(value_);
+            }
+
+            virtual std::string quack() const
+            {
+                return value_.quack();
+            }
+
+            T value_;
+        };
+
+    public: std::unique_ptr<handle_base> value;
+} // end h block
+};

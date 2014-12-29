@@ -1,0 +1,28 @@
+~unit "QuackerTest" type=test;
+~import Quacker;
+~import std::cout;
+~import std::endl;
+~import std::string;
+
+
+~block "cpp" :=
+
+#define BOOST_TEST_MODULE QuackerTest
+#include <boost/test/unit_test.hpp>
+
+#define CHECK_POINT() BOOST_REQUIRE_EQUAL(2, 2);
+
+BOOST_AUTO_TEST_CASE(receive_happy_response)
+{
+    Quacker q;
+    cout << "_@< <(" << q.quack() << "!) " << endl;
+
+    struct Doggy {
+        string quack() const { return "I am a dog!"; }
+    };
+
+    q = Doggy{};
+    cout << "_@< <(" << q.quack() << "!) " << endl;
+   // World w;
+    //BOOST_REQUIRE_EQUAL(":)", w.Response());
+}

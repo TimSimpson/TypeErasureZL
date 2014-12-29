@@ -1,0 +1,26 @@
+~unit "QuackerExample" type=exe
+{
+    ~import std::cin;
+    ~import std::cout;
+    ~import std::endl;
+    ~import std::string;
+    ~import Quacker;
+
+    ~block "cpp"
+    {
+        int main(int argc, char ** argv)
+        {
+            Quacker q;
+            cout << "_@< <(" << q.quack() << "!) " << endl;
+
+            struct Doggy {
+                string quack() const { return "I am a dog!"; }
+            };
+
+            q = Doggy{};
+            cout << "_@< <(" << q.quack() << "!) " << endl;
+
+            //cout << "_@< <(" << dog.quack() << "!) " << endl;
+        }
+    }
+}

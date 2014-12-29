@@ -1,0 +1,32 @@
+~unit "anything_test" type=test;
+~import anything;
+
+~block "cpp" :=
+
+#define BOOST_TEST_MODULE anything_test
+#include <boost/test/unit_test.hpp>
+
+#define CHECK_POINT() BOOST_REQUIRE_EQUAL(2, 2);
+
+BOOST_AUTO_TEST_CASE(receive_happy_response)
+{
+    int i = 1;
+    int * i_ptr = &i;
+    anything y = i;
+    anything z(i);
+    anything z3(z);
+    anything z2(0);
+    z2 = z;
+
+    anything a;
+    a = i;
+    a = i_ptr;
+
+    a = 2.0;
+    a = std::string("3");
+    struct foo {};
+
+    a = foo();
+   // World w;
+    //BOOST_REQUIRE_EQUAL(":)", w.Response());
+}

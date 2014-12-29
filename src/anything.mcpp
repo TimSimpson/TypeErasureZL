@@ -1,0 +1,73 @@
+class anything
+{
+    ~block "h-predef" { #include <memory>
+#include <iostream>
+    }
+
+    public anything() = default;
+
+    public anything(const anything & rhs)
+    :   handle_(rhs.handle_->clone())
+    {
+    }
+
+    ~block "h" {
+    public: template <typename T> anything(T t)
+    :   handle_(new handle<typename std::remove_reference<T>::type>(
+            std::forward<T>(t)
+        ))
+    {
+    } }
+
+    public anything & operator =(const anything & rhs)
+    {
+        if (this == &rhs)
+        {
+            return *this;
+        }
+        decltype(handle_) temp(rhs.handle_->clone());
+        std::swap(temp, this->handle_);
+        return *this;
+    }
+
+    ~block "h" {
+    public: template <typename T> anything & operator =(T t)
+    {
+        decltype(handle_) temp(
+            new handle<typename std::remove_reference<T>::type>(
+                std::forward<T>(t)
+            )
+        );
+        std::swap(temp, this->handle_);
+        return *this;
+    } }
+
+    public class handle_base
+    {
+        public virtual ~handle_base() {}
+        public virtual handle_base * clone() const = 0;
+    };
+
+~block "h" {
+    public:
+        template<typename T>
+        class handle : public handle_base
+        {
+            public: handle(T value)
+            :   value_(std::move(value))
+            {
+            }
+
+            public: virtual ~handle() = default;
+
+            public: virtual handle_base * clone() const override
+            {
+                return new handle(value_);
+            }
+
+            T value_;
+        };
+
+    public: std::unique_ptr<handle_base> handle_;
+} // end h block
+};

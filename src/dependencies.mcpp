@@ -1,0 +1,1 @@
+class std::unique_ptr { ~hfile=<memory> };

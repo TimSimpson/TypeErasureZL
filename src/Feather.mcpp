@@ -1,28 +1,28 @@
 ~import std::string;
 ~import std::unique_ptr;
 
-class Quacker
+class Feather
 {
-    ~import Quacker::handle_base;
+    ~import Feather::handle_base;
 
-    public unique_ptr<handle_base> value;
+public:
+    unique_ptr<handle_base> value;
 
-    public Quacker() = default;
+    Feather() = default;
 
-    public Quacker(const Quacker & rhs)
+    Feather(const Feather & rhs)
     :   value(rhs.value->clone())
     {
     }
 
-    template <typename T>
-    public Quacker(T t)
+    template <typename T> Feather(T t)
     :   value(new handle<typename std::remove_reference<T>::type>(
             std::forward<T>(t)
         ))
     {
     }
 
-    public Quacker & operator =(const Quacker & rhs)
+    Feather & operator =(const Feather & rhs)
     {
         if (this == &rhs)
         {
@@ -33,8 +33,7 @@ class Quacker
         return *this;
     }
 
-    template <typename T>
-    public Quacker & operator =(T t)
+    template <typename T> Feather & operator =(T t)
     {
         decltype(value) temp(
             new handle<typename std::remove_reference<T>::type>(
@@ -45,7 +44,7 @@ class Quacker
         return *this;
     }
 
-    public std::string quack() const
+    std::string quack() const
     {
         if (value) {
             return value->quack();
@@ -62,23 +61,25 @@ class Quacker
     };
 
     template<typename T>
-    public class handle : public handle_base
+    class handle : public handle_base
     {
-        public T value_;
-
-        public handle(T value)
+    public:
+        handle(T value)
         :   value_(std::move(value))
         {
         }
 
-        public virtual handle_base * clone() const
+        virtual handle_base * clone() const
         {
             return new handle(value_);
         }
 
-        public virtual std::string quack() const
+        virtual std::string quack() const
         {
-            return value_.quack();
+            return value_->.quack();
         }
+
+        T value_;
     };
+
 };

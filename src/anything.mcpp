@@ -1,8 +1,10 @@
+~import std::unique_ptr;
+
 class anything
 {
-    ~block "h-predef" { #include <memory>
-#include <iostream>
-    }
+    ~import anything::handle_base;
+
+    public unique_ptr<handle_base> handle_;
 
     public anything() = default;
 
@@ -11,13 +13,14 @@ class anything
     {
     }
 
-    ~block "h" {
-    public: template <typename T> anything(T t)
+    template<typename T>
+    public anything(T t)
     :   handle_(new handle<typename std::remove_reference<T>::type>(
             std::forward<T>(t)
         ))
     {
-    } }
+
+    }
 
     public anything & operator =(const anything & rhs)
     {
@@ -30,8 +33,8 @@ class anything
         return *this;
     }
 
-    ~block "h" {
-    public: template <typename T> anything & operator =(T t)
+    template <typename T>
+    public anything & operator =(T t)
     {
         decltype(handle_) temp(
             new handle<typename std::remove_reference<T>::type>(
@@ -40,7 +43,8 @@ class anything
         );
         std::swap(temp, this->handle_);
         return *this;
-    } }
+    }
+
 
     public class handle_base
     {
@@ -48,26 +52,28 @@ class anything
         public virtual handle_base * clone() const = 0;
     };
 
-~block "h" {
-    public:
-        template<typename T>
-        class handle : public handle_base
+    template<typename T>
+    class Fake : public handle_base
+    {
+        public Fake(T value)
+        {}
+    };
+
+    template<typename T>
+    public class handle : public handle_base
+    {
+        private T value_;
+
+        public handle(T value)
+        :   value_(std::move(value))
         {
-            public: handle(T value)
-            :   value_(std::move(value))
-            {
-            }
+        }
 
-            public: virtual ~handle() = default;
+        public virtual ~handle() = default;
 
-            public: virtual handle_base * clone() const override
-            {
-                return new handle(value_);
-            }
-
-            T value_;
-        };
-
-    public: std::unique_ptr<handle_base> handle_;
-} // end h block
+        public virtual handle_base * clone() const override
+        {
+            return new handle(value_);
+        }
+    };
 };
